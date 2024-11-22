@@ -1,3 +1,6 @@
+import math
+
+
 class GamePlay:
     @classmethod
     def print_board(cls, sign_dict):
@@ -41,33 +44,18 @@ class GamePlay:
             return True
 
     @classmethod
-    def evaluate(cls, board):
-        for row in range(3):
-            if board[row][0] == board[row][1] == board[row][2]:
-                if board[row][0] == 'X':
-                    return 10  # виграш компютера
-                elif board[row][0] == 'O':
-                    return -10  # програш для компютера
-
-        for col in range(3):
-            if board[0][col] == board[1][col] == board[2][col]:
-                if board[0][col] == 'X':
-                    return 10  # виграш компютера
-                elif board[0][col] == 'O':
-                    return -10  # програш для компютера
-
-        if board[0][0] == board[1][1] == board[2][2]:
-            if board[0][0] == 'X':
-                return 10  # виграш компютера
-            elif board[0][0] == 'O':
-                return -10  # програш для компютера
-
-        if board[0][2] == board[1][1] == board[2][0]:
-            if board[0][2] == 'X':
-                return 10  # виграш компютера
-            elif board[0][2] == 'O':
-                return -10  # програш для компютера
-        return 0
+    def check_win(cls, board):
+        for row in board:
+            if row[0] == row[1] == row[2] and row[0] != ' ':
+                return row[0]
+        for i in range(3):
+            if board[0][i] == board[1][i] == board[2][i] and board[0][i] != ' ':
+                return board[0][i]
+        if board[0][0] == board[1][1] == board[2][2] and board[0][0] != ' ':
+            return board[0][0]
+        if board[0][2] == board[1][1] == board[2][0] and board[0][2] != ' ':
+            return board[0][2]
+        return None
 
     @classmethod
     def is_move_left(cls, board):
@@ -79,48 +67,49 @@ class GamePlay:
 
     @classmethod
     def minimax(slc, board, depth, is_max):
-        score = slc.evaluate(board)
-        if score == 10:
-            return score - depth
-        if score == -10:
-            return score + depth
-
+        winner = slc.check_win(board)
+        if winner =='0':
+            return 10-depth
+        if winner == 'X':
+            return depth-10
         if not slc.is_move_left(board):
             return 0
 
         if is_max:
-            best = -1000
+            best = -math.inf
             for row in range(3):
                 for col in range(3):
                     if board[row][col] == ' ':
                         board[row][col] = 'X'
-                        best = max(best, slc.minimax(board, depth + 1, is_max))
+                        score = slc.minimax(board, depth + 1, False)
+                        best = max(best, score)
                         board[row][col] = ' '
             return best
         else:
-            best = 1000
+            best = math.inf
             for row in range(3):
                 for col in range(3):
                     if board[row][col] == ' ':
                         board[row][col] = 'O'
-                        best = min(best, slc.minimax(board, depth + 1, not is_max))
+                        score = slc.minimax(board, depth + 1, True)
+                        best = min(best, score)
                         board[row][col] = ' '
             return best
 
     @classmethod
     def find_move(slc, board):
-        best_val = -1000
-        best_move = (-1, -1)
+        best_val = -math.inf
+        best_move = None
 
         for row in range(3):
             for col in range(3):
                 if board[row][col] == ' ':
-                    board[row][col] = 'X'
-                    move_val = slc.minimax(board, 0, False)
+                    board[row][col] = 'O'
+                    move_val = slc.minimax(board, 0, True)
                     board[row][col] = ' '
 
                     if move_val > best_val:
-                        best_move = (row, col)
                         best_val = move_val
-        return best_move
+                        best_move = (row,col)
 
+        return best_move

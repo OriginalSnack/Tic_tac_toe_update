@@ -37,7 +37,8 @@ class Machine:
                             print("\nКомп'ютер переміг!")
                             return
                         break
-    def second_level_game(self,board):
+# Упростити та зрозуміти алгоритм мінімакс
+    def second_level_game(self, board):
         for i in range(9):
             if i % 2 == 0:
                 while True:
@@ -56,13 +57,15 @@ class Machine:
                         print("Неправильна координата, введіть числа.")
             else:
                 while True:
-                    upgrade = gp.find_move(board)
-                    upgrade_row = upgrade[0]
-                    upgrade_col = upgrade[1]
-                    if gp.insert_sign(board, upgrade_row, upgrade_col, 'O'):
-                        print(f"\nКомп'ютер зробив хід: рядок {upgrade_row}, стовпець {upgrade_col}")
+                    best_move = gp.find_move(board)  # Виклик find_move
+                    if best_move is None:  # Якщо find_move повернуло None
+                        print("Гра завершена, немає доступних ходів.")
+                        return
+                    if gp.insert_sign(board, best_move[0] + 1, best_move[1] + 1, 'O'):
+                        print(f"\nКомп'ютер зробив хід: рядок {best_move[0] + 1}, стовпець {best_move[1] + 1}")
                         gp.print_board(board)
                         if gp.win_algorithm(board, 'O'):
                             print("\nКомп'ютер переміг!")
                             return
                         break
+
