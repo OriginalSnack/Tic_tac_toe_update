@@ -18,10 +18,12 @@ instructions = """To będzie nasza plansza do gry w kółko i krzyżyk (tic tac 
 4. Gracz 1 zaczyna pierwszy.
 """
 
-# обєкт класу Gameplay()
+# object klasu GamePlay
 gp = GamePlay()
 
-
+'''
+    Funkcja, która pozwala grać z kolegą
+'''
 def game_with_human(board):
     # дошкa
     player1 = input(f"\nWpisz imię pierwszego gracza: ")
@@ -36,7 +38,7 @@ def game_with_human(board):
             try:
                 row, col = map(int, input(
                     f"\n{curent_player}, wprowadź współrzędne (wiersz i kolumna) oddzielone spacją: ").split())
-                if gp.insert_sign(board, row-1, col-1, curent_sign):
+                if gp.insert_sign(board, row - 1, col - 1, curent_sign):
                     gp.print_board(board)
                     if gp.win_algorithm(board, curent_sign):
                         print(f"\n{curent_player} wygrał!")
@@ -50,7 +52,6 @@ def game_with_human(board):
     print("\nRemis")
 
 
-# Основна функція запуску
 def main():
     sign_dict = [[' ' for _ in range(3)] for _ in range(3)]
     print(instructions)

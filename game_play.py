@@ -1,19 +1,33 @@
 import math
 
+'''
+    Klasa GamePlay ze wszystkimi funkcjami gry
+'''
+
 
 class GamePlay:
+    '''
+        Funkcja print_board() dla rysowania pola
+     '''
+
     @classmethod
-    def print_board(cls, sign_dict):
+    def print_board(cls, board):
+        '''board to pole przedstawione jako lista z listów'''
         for i in range(3):
             row = []
             for j in range(3):
-                row.append(sign_dict[i][j])
+                row.append(board[i][j])
             print(" | ".join(row))
             if i < 2:
                 print("---------")
 
+    '''
+        Funkcja win_algorithm  sprawdza kto wygrał
+    '''
+
     @classmethod
-    def win_algorithm(cls, sign_dict, sign):
+    def win_algorithm(cls, board, sign):
+        '''sign - znak gracza'''
         list_wins = [
             [(0, 0), (0, 1), (0, 2)],
             [(1, 0), (1, 1), (1, 2)],
@@ -28,18 +42,28 @@ class GamePlay:
         for combination in list_wins:
             winning = True
             for row, col in combination:
-                if sign_dict[row][col] != sign:
+                if board[row][col] != sign:
                     winning = False
                     break
             if winning:
                 return True
 
-    # for inserting signs in cells
+    '''
+        Funkcja insert_sign wstawia znaki do komórki,
+        row - wiersz
+        col - columna
+    i'''
+
     @classmethod
     def insert_sign(cls, board, row, col, sign):
         if board[row][col] == ' ':
             board[row][col] = sign
             return True
+
+    '''
+        Funkcja check_win zwraca znak który, wygrał, 
+        ona została tworzona specjalnie dla funkcji minimaks
+    '''
 
     @classmethod
     def check_win(cls, board):
@@ -55,6 +79,10 @@ class GamePlay:
             return board[0][2]
         return None
 
+    '''
+        Funkcja sprawdzająca czy są puste komórki
+    '''
+
     @classmethod
     def is_move_left(cls, board):
         for row in range(3):
@@ -62,6 +90,13 @@ class GamePlay:
                 if board[row][col] == ' ':
                     return True
         return False
+
+    '''
+        Funkcja, która przedstawia algorytm minimaks:
+        depth - głębokość 
+        is_max - wartość boolean, domyślnie ustawiona na False. 
+        Jeśli is_max jest False, oznacza to, że teraz ruch należy do komputera (maksymalizatora).
+        Jeśli is_max jest True, oznacza to że teraz ruch należy do gracza(minimalizatora)'''
 
     @classmethod
     def minimax(slc, board, depth, is_max):
@@ -94,6 +129,10 @@ class GamePlay:
                         board[row][col] = ' '
             return best
 
+    '''
+    ...
+    '''
+
     @classmethod
     def find_move(slc, board):
         best_val = -math.inf
@@ -109,5 +148,4 @@ class GamePlay:
                     if move_val > best_val:
                         best_val = move_val
                         best_move = (row, col)
-
         return best_move
