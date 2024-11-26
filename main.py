@@ -1,7 +1,7 @@
-from structure import GamePlay
-from si import Machine
+from game_play import GamePlay
+from computer import Machine
 
-# інструкція
+# instrukcja
 instructions = """To będzie nasza plansza do gry w kółko i krzyżyk (tic tac toe)
 
  (1 1) | (1 2) | (1 3) 
@@ -12,9 +12,8 @@ instructions = """To będzie nasza plansza do gry w kółko i krzyżyk (tic tac 
 
 *instrukcje:
 
-0. Masz wybór: grać ze sztuczną inteligencją albo z kolegą.
-1. Masz wybór: rozpocznij nową grę lub kontynuuj od ostatniego punktu zapisu.
-2. Wprowadź parę liczb (1 3), aby umieścić swój znak.
+1. Masz wybór: grać z komputerom ałbo z kolegą.
+2. Wprowadź parę liczb (x-wiersz, y-kolumnę),aby umieścić swój znak.
 3. Musisz wypełnić wszystkie pola, aby uzyskać wynik.
 4. Gracz 1 zaczyna pierwszy.
 """
@@ -23,32 +22,32 @@ instructions = """To będzie nasza plansza do gry w kółko i krzyżyk (tic tac 
 gp = GamePlay()
 
 
-def game(board):
+def game_with_human(board):
     # дошкa
-    player1 = input(f"\nВведіть назву першого користувача: ")
-    player2 = input("Введіть назву другого користувача: ")
+    player1 = input(f"\nWpisz imię pierwszego gracza: ")
+    player2 = input("Wpisz imię drugiego gracza: ")
     players = [player1, player2]
-    signs = ['X', 'O']
+    znaky = ['X', 'O']
 
     for i in range(9):
-        current_player = players[i % 2]
-        current_sign = signs[i % 2]
+        curent_player = players[i % 2]
+        curent_sign = znaky[i % 2]
         while True:
             try:
                 row, col = map(int, input(
-                    f"\n{current_player}, введіть координати (рядок і стовпець) через пробіл: ").split())
-                if gp.insert_sign(board, row, col, current_sign):
+                    f"\n{curent_player}, wprowadź współrzędne (wiersz i kolumna) oddzielone spacją: ").split())
+                if gp.insert_sign(board, row-1, col-1, curent_sign):
                     gp.print_board(board)
-                    if gp.win_algorithm(board, current_sign):
-                        print(f"\n{current_player} переміг!")
+                    if gp.win_algorithm(board, curent_sign):
+                        print(f"\n{curent_player} wygrał!")
                         return
                     break
                 else:
-                    print("Поле зайняте, спробуйте ще раз.")
+                    print("Pole zajęte, spróbuj ponownie.")
             except ValueError:
-                print("Неправильна координата, введіть числа.")
+                print("Nieprawidłowe współrzędne, wprowadź liczby.")
 
-    print("\nНічия")
+    print("\nRemis")
 
 
 # Основна функція запуску
@@ -57,14 +56,14 @@ def main():
     print(instructions)
     while (True):
         try:
-            choise = int(input(f"\nРежим гри 1 (з людиною) або 2 (з комп'ютером): "))
+            choise = int(input(f"\nTryb gry 1 (z osobą) lub 2 (z komputerem): "))
             if choise == 1:
-                game(sign_dict)
+                game_with_human(sign_dict)
                 break
             elif choise == 2:
-                print("Режим гри з комп'ютером у розробці...")
-                player12 = input("Введи своє ім`я: ")
-                level_game = input("Введіть рівень складності: 1(слабо) та 2(складно): ")
+                print("Tryb gry z komputerem jest w trakcie opracowywania...")
+                player12 = input("Podaj swoje imię: ")
+                level_game = input("Wprowadź poziom trudności: 1(łatwy) lub 2(trudny): ")
                 si = Machine(player12, 'O')
                 if level_game == 1:
                     si.first_level_game(sign_dict)
@@ -72,9 +71,9 @@ def main():
                     si.second_level_game(sign_dict)
                 break
             else:
-                print("Невірне введення, спробуйте ще раз")
+                print("Nieprawidłowe dane, spróbuj ponownie")
         except ValueError:
-            print("Невірне введення, спробуйте ще раз")
+            print("Nieprawidłowe dane, spróbuj ponownie")
 
 
 if __name__ == "__main__":

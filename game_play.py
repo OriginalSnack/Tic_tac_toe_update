@@ -37,10 +37,8 @@ class GamePlay:
     # for inserting signs in cells
     @classmethod
     def insert_sign(cls, board, row, col, sign):
-        row_new = row - 1
-        col_new = col - 1
-        if board[row_new][col_new] == ' ':
-            board[row_new][col_new] = sign
+        if board[row][col] == ' ':
+            board[row][col] = sign
             return True
 
     @classmethod
@@ -68,10 +66,10 @@ class GamePlay:
     @classmethod
     def minimax(slc, board, depth, is_max):
         winner = slc.check_win(board)
-        if winner =='0':
-            return 10-depth
+        if winner == '0':
+            return 10 - depth
         if winner == 'X':
-            return depth-10
+            return depth - 10
         if not slc.is_move_left(board):
             return 0
 
@@ -110,6 +108,6 @@ class GamePlay:
 
                     if move_val > best_val:
                         best_val = move_val
-                        best_move = (row,col)
+                        best_move = (row, col)
 
         return best_move
