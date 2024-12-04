@@ -99,34 +99,34 @@ class GamePlay:
         Jeśli is_max jest True, oznacza to że teraz ruch należy do gracza(minimalizatora)'''
 
     @classmethod
-    def minimax(slc, board, depth, is_max):
-        winner = slc.check_win(board)
-        if winner == '0':
+    def minimax(cls, board, depth, is_max):
+        winner = cls.check_win(board)
+        if winner == 'O':  # Комп'ютер виграв
             return 10 - depth
-        if winner == 'X':
+        if winner == 'X':  # Гравець виграв
             return depth - 10
-        if not slc.is_move_left(board):
+        if not cls.is_move_left(board):  # Нічия
             return 0
 
-        if is_max:
+        if is_max:  # Хід комп'ютера (максимізатора)
             best = -math.inf
             for row in range(3):
                 for col in range(3):
                     if board[row][col] == ' ':
-                        board[row][col] = 'X'
-                        score = slc.minimax(board, depth + 1, False)
+                        board[row][col] = 'O'  # Комп'ютерний хід
+                        score = cls.minimax(board, depth + 1, False)
                         best = max(best, score)
-                        board[row][col] = ' '
+                        board[row][col] = ' '  # Скасування ходу
             return best
-        else:
+        else:  # Хід гравця (мінімізатора)
             best = math.inf
             for row in range(3):
                 for col in range(3):
                     if board[row][col] == ' ':
-                        board[row][col] = 'O'
-                        score = slc.minimax(board, depth + 1, True)
+                        board[row][col] = 'X'  # Хід гравця
+                        score = cls.minimax(board, depth + 1, True)
                         best = min(best, score)
-                        board[row][col] = ' '
+                        board[row][col] = ' '  # Скасування ходу
             return best
 
     '''

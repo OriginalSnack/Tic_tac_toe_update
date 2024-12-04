@@ -2,7 +2,7 @@ from game_play import GamePlay
 from computer import Machine
 
 # instrukcja
-instructions = """To będzie nasza plansza do gry w kółko i krzyżyk (tic tac toe)
+instrukcja = """To będzie nasza plansza do gry w kółko i krzyżyk (tic tac toe)
 
  (1 1) | (1 2) | (1 3) 
 -------|-------|------
@@ -54,7 +54,7 @@ def game_with_human(board):
 
 def main():
     sign_dict = [[' ' for _ in range(3)] for _ in range(3)]
-    print(instructions)
+    print(instrukcja)
     while (True):
         try:
             choise = int(input(f"\nTryb gry 1 (z osobą) lub 2 (z komputerem): "))
