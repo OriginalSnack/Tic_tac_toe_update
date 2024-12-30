@@ -25,7 +25,6 @@ gp = GamePlay()
     Funkcja, która pozwala grać z kolegą
 '''
 def game_with_human(board):
-    # дошкa
     player1 = input(f"\nWpisz imię pierwszego gracza: ")
     player2 = input("Wpisz imię drugiego gracza: ")
     players = [player1, player2]
@@ -46,9 +45,8 @@ def game_with_human(board):
                     break
                 else:
                     print("Pole zajęte, spróbuj ponownie.")
-            except ValueError:
+            except (IndexError, ValueError):
                 print("Nieprawidłowe współrzędne, wprowadź liczby.")
-
     print("\nRemis")
 
 
@@ -64,12 +62,15 @@ def main():
             elif choise == 2:
                 print("Tryb gry z komputerem jest w trakcie opracowywania...")
                 player12 = input("Podaj swoje imię: ")
-                level_game = input("Wprowadź poziom trudności: 1(łatwy) lub 2(trudny): ")
-                si = Machine(player12, 'O')
+                level_game = int(input("Wprowadź poziom trudności: 1(łatwy) lub 2(trudny): "))
+                si = Machine(player12, 'O',gp)
                 if level_game == 1:
                     si.first_level_game(sign_dict)
-                else:
+                elif level_game == 2:
                     si.second_level_game(sign_dict)
+                else:
+                    print("Nieprawidłowe dane, spróbuj ponownie")
+                    continue
                 break
             else:
                 print("Nieprawidłowe dane, spróbuj ponownie")

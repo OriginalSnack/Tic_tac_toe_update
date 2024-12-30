@@ -39,14 +39,10 @@ class GamePlay:
             [(0, 2), (1, 1), (2, 0)]
         ]
 
-        for combination in list_wins:
-            winning = True
-            for row, col in combination:
-                if board[row][col] != sign:
-                    winning = False
-                    break
-            if winning:
+        for combinations in list_wins:
+            if all(board[row][col] == sign for row, col in combinations):
                 return True
+        return False
 
     '''
         Funkcja insert_sign wstawia znaki do komórki,
@@ -61,35 +57,20 @@ class GamePlay:
             return True
 
     '''
-        Funkcja check_win zwraca znak który, wygrał, 
-        ona została tworzona specjalnie dla funkcji minimaks
-    '''
-
-    @classmethod
-    def check_win(cls, board):
-        for row in board:
-            if row[0] == row[1] == row[2] and row[0] != ' ':
-                return row[0]
-        for i in range(3):
-            if board[0][i] == board[1][i] == board[2][i] and board[0][i] != ' ':
-                return board[0][i]
-        if board[0][0] == board[1][1] == board[2][2] and board[0][0] != ' ':
-            return board[0][0]
-        if board[0][2] == board[1][1] == board[2][0] and board[0][2] != ' ':
-            return board[0][2]
-        return None
-
-    '''
         Funkcja sprawdzająca czy są puste komórki
     '''
 
     @classmethod
-    def is_move_left(cls, board):
-        for row in range(3):
-            for col in range(3):
-                if board[row][col] == ' ':
-                    return True
-        return False
+    def is_full(cls, board):
+        return all(cell != " " for row in board for cell in row)
+
+    @classmethod
+    def evaluate(cls, board):
+        if cls.win_algorithm(board, "O"):
+            return 1
+        elif cls.win_algorithm(board, "X"):
+            return -1
+        return 0
 
     '''
         Funkcja, która przedstawia algorytm minimaks:
@@ -100,52 +81,47 @@ class GamePlay:
 
     @classmethod
     def minimax(cls, board, depth, is_max):
-        winner = cls.check_win(board)
-        if winner == 'O':  # Комп'ютер виграв
-            return 10 - depth
-        if winner == 'X':  # Гравець виграв
-            return depth - 10
-        if not cls.is_move_left(board):  # Нічия
-            return 0
+        score = cls.evaluate(board)
 
-        if is_max:  # Хід комп'ютера (максимізатора)
-            best = -math.inf
+        if score == 1 or score == -1 or cls.is_full(board):
+            return score
+
+        if is_max:
+            best_score = -math.inf
             for row in range(3):
                 for col in range(3):
-                    if board[row][col] == ' ':
-                        board[row][col] = 'O'  # Комп'ютерний хід
-                        score = cls.minimax(board, depth + 1, False)
-                        best = max(best, score)
-                        board[row][col] = ' '  # Скасування ходу
-            return best
-        else:  # Хід гравця (мінімізатора)
-            best = math.inf
+                    if board[row][col] == " ":
+                        board[row][col] = "O"
+                        best_score = max(best_score, cls.minimax(board, depth + 1, False))
+                        board[row][col] = " "
+            return best_score
+        else:
+            best_score = math.inf
             for row in range(3):
                 for col in range(3):
-                    if board[row][col] == ' ':
-                        board[row][col] = 'X'  # Хід гравця
-                        score = cls.minimax(board, depth + 1, True)
-                        best = min(best, score)
-                        board[row][col] = ' '  # Скасування ходу
-            return best
+                    if board[row][col] == " ":
+                        board[row][col] = "X"
+                        best_score = min(best_score, cls.minimax(board, depth + 1, True))
+                        board[row][col] = " "
+            return best_score
 
     '''
-    ...
+        Funkcja dla poszukiwania najliepszego chodu
     '''
 
     @classmethod
-    def find_move(slc, board):
-        best_val = -math.inf
-        best_move = None
+    def find_best_move(slc, board):
+        best_score = -math.inf
+        best_move = (-1, -1)
 
         for row in range(3):
             for col in range(3):
-                if board[row][col] == ' ':
-                    board[row][col] = 'O'
-                    move_val = slc.minimax(board, 0, True)
-                    board[row][col] = ' '
+                if board[row][col] == " ":
+                    board[row][col] = "O"
+                    score = slc.minimax(board, 0, False)
+                    board[row][col] = " "
 
-                    if move_val > best_val:
-                        best_val = move_val
+                    if score > best_score:
+                        best_score = score
                         best_move = (row, col)
         return best_move

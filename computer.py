@@ -1,9 +1,6 @@
 import random
 from game_play import GamePlay
 
-# object klasu GamePlay
-gp = GamePlay()
-
 '''
     Klas Machine zawiera funkcji dla możliwości grać z komputerom
     Są dwa poziomy trudności
@@ -17,9 +14,10 @@ class Machine:
         Konstruktor ma dwa parametry - player(gracz),sign(znak)
     '''
 
-    def __init__(self, player, sign):
+    def __init__(self, player, sign, gameplay):
         self.player = player
         self.sign = sign
+        self.gp = gameplay
 
     '''
         Pierwszy poziom trudności działa za pomocą biblioteky random
@@ -28,15 +26,17 @@ class Machine:
 
     def first_level_game(self, board):
         for i in range(9):
+            if self.gp.win_algorithm(board, 'X') or self.gp.win_algorithm(board, 'O'):
+                return
             if i % 2 == 0:
                 self.common_function_player(board)
             else:
                 while True:
-                    random_row, random_col = random.randint(1, 3), random.randint(1, 3)
-                    if gp.insert_sign(board, random_row, random_col, 'O'):
-                        print(f"\nKomputer wykonał ruch: wiersz {random_row}, kolumna {random_col}")
-                        gp.print_board(board)
-                        if gp.win_algorithm(board, 'O'):
+                    random_row, random_col = random.randint(0, 2), random.randint(0, 2)
+                    if self.gp.insert_sign(board, random_row, random_col, 'O'):
+                        print(f"\nKomputer wykonał ruch: wiersz {random_row + 1}, kolumna {random_col + 1}")
+                        self.gp.print_board(board)
+                        if self.gp.win_algorithm(board, 'O'):
                             print("\nKomputer wygrał!")
                             return
                         break
@@ -51,14 +51,17 @@ class Machine:
             try:
                 row, col = map(int, input(
                     f"\n{self.player}, wprowadź współrzędne (wiersz i kolumna) oddzielone spacją: ").split())
-                if gp.insert_sign(board, row - 1, col - 1, 'X'):
-                    gp.print_board(board)
-                    if gp.win_algorithm(board, 'X'):
-                        print(f"\n{self.player} wygrał!")
-                        return
-                    break
+                if 1 <= row <= 3 and 1 <= col <= 3:
+                    if self.gp.insert_sign(board, row - 1, col - 1, 'X'):
+                        self.gp.print_board(board)
+                        if self.gp.win_algorithm(board, 'X'):
+                            print(f"\n{self.player} wygrał!")
+                            return
+                        break
+                    else:
+                        print("Pole zajęte, spróbuj ponownie.")
                 else:
-                    print("Pole zajęte, spróbuj ponownie.")
+                    print("Wprowadź liczby od 1 do 3.")
             except ValueError:
                 print("Nieprawidłowe współrzędne, wprowadź liczby.")
 
@@ -69,18 +72,18 @@ class Machine:
 
     def second_level_game(self, board):
         for i in range(9):
+            if self.gp.win_algorithm(board, 'X') or self.gp.win_algorithm(board, 'O'):
+                return
             if i % 2 == 0:
                 self.common_function_player(board)
             else:
-                while True:
-                    best_move = gp.find_move(board)  # Виклик find_move
-                    if best_move is None:  # Якщо find_move повернуло None
-                        print("Gra zakończona, brak dostępnych ruchów.")
+                comp_move = self.gp.find_best_move(board)
+                if comp_move is None:
+                    print("Gra zakończona, brak dostępnych ruchów.")
+                    return
+                if self.gp.insert_sign(board, comp_move[0], comp_move[1], 'O'):
+                    print(f"\nKomputer wykonał ruch: wiersz {comp_move[0] + 1}, kolumna {comp_move[1] + 1}")
+                    self.gp.print_board(board)
+                    if self.gp.win_algorithm(board, 'O'):
+                        print("\nKomputer wygrał!")
                         return
-                    if gp.insert_sign(board, best_move[0], best_move[1], 'O'):
-                        print(f"\nKomputer wykonał ruch: wiersz {best_move[0] + 1}, kolumna {best_move[1] + 1}")
-                        gp.print_board(board)
-                        if gp.win_algorithm(board, 'O'):
-                            print("\nKomputer wygrał!")
-                            return
-                        break
