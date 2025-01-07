@@ -11,7 +11,7 @@ class GamePlay:
      '''
 
     @staticmethod
-    def print_board(cls, board):
+    def print_board(board):
         '''board to pole przedstawione jako lista z listów'''
         for i in range(3):
             row = []
@@ -51,7 +51,7 @@ class GamePlay:
     i'''
 
     @staticmethod
-    def insert_sign(cls, board, row, col, sign):
+    def insert_sign(board, row, col, sign):
         if board[row][col] == ' ':
             board[row][col] = sign
             return True
@@ -61,7 +61,7 @@ class GamePlay:
     '''
 
     @staticmethod
-    def is_full(cls, board):
+    def is_full(board):
         return all(cell != " " for row in board for cell in row)
 
     @classmethod
