@@ -10,7 +10,7 @@ class GamePlay:
         Funkcja print_board() dla rysowania pola
      '''
 
-    @classmethod
+    @staticmethod
     def print_board(cls, board):
         '''board to pole przedstawione jako lista z listów'''
         for i in range(3):
@@ -50,7 +50,7 @@ class GamePlay:
         col - columna
     i'''
 
-    @classmethod
+    @staticmethod
     def insert_sign(cls, board, row, col, sign):
         if board[row][col] == ' ':
             board[row][col] = sign
@@ -60,7 +60,7 @@ class GamePlay:
         Funkcja sprawdzająca czy są puste komórki
     '''
 
-    @classmethod
+    @staticmethod
     def is_full(cls, board):
         return all(cell != " " for row in board for cell in row)
 
@@ -110,7 +110,7 @@ class GamePlay:
     '''
 
     @classmethod
-    def find_best_move(slc, board):
+    def find_best_move(cls, board):
         best_score = -math.inf
         best_move = (-1, -1)
 
@@ -118,7 +118,7 @@ class GamePlay:
             for col in range(3):
                 if board[row][col] == " ":
                     board[row][col] = "O"
-                    score = slc.minimax(board, 0, False)
+                    score = cls.minimax(board, 0, False)
                     board[row][col] = " "
 
                     if score > best_score:

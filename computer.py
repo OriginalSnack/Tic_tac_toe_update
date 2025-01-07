@@ -14,20 +14,19 @@ class Machine:
         Konstruktor ma dwa parametry - player(gracz),sign(znak)
     '''
 
-    def __init__(self, player, sign, gameplay):
+    def __init__(self, player, sign):
         self.player = player
         self.sign = sign
-        self.gp = gameplay
+        self.gp = GamePlay()
 
     '''
-        Pierwszy poziom trudności działa za pomocą biblioteky random
-        komputer wstawia znak losowo
+        Pierwszy poziom trudności działa za pomocą biblioteky random.
+        Komputer wstawia znak losowo
     '''
 
-    def first_level_game(self, board):
+    def first_level_game(self):
+        board = [[' ' for _ in range(3)] for _ in range(3)]
         for i in range(9):
-            if self.gp.win_algorithm(board, 'X') or self.gp.win_algorithm(board, 'O'):
-                return
             if i % 2 == 0:
                 self.common_function_player(board)
             else:
@@ -36,13 +35,18 @@ class Machine:
                     if self.gp.insert_sign(board, random_row, random_col, 'O'):
                         print(f"\nKomputer wykonał ruch: wiersz {random_row + 1}, kolumna {random_col + 1}")
                         self.gp.print_board(board)
-                        if self.gp.win_algorithm(board, 'O'):
-                            print("\nKomputer wygrał!")
-                            return
                         break
+            if self.gp.win_algorithm(board, 'X'):
+                print(f"\n{self.player} wygrał!")
+                return
+            if self.gp.win_algorithm(board, 'O'):
+                print("\nKomputer wygrał!")
+                return
+        if not self.gp.win_algorithm(board, 'X') and not self.gp.win_algorithm(board, 'O'):
+            print("\nRemis")
 
     '''
-         Common_function_player jest funkcją wspólną dla pierwszego i drugiego poziomu trudności
+         Common_function_player jest funkcją wspólną dla pierwszego i drugiego poziomu trudności.
          Dlatego umieściłem ruch gracza do innej funkcji aby uprościć kod
     '''
 
@@ -54,9 +58,6 @@ class Machine:
                 if 1 <= row <= 3 and 1 <= col <= 3:
                     if self.gp.insert_sign(board, row - 1, col - 1, 'X'):
                         self.gp.print_board(board)
-                        if self.gp.win_algorithm(board, 'X'):
-                            print(f"\n{self.player} wygrał!")
-                            return
                         break
                     else:
                         print("Pole zajęte, spróbuj ponownie.")
@@ -66,11 +67,12 @@ class Machine:
                 print("Nieprawidłowe współrzędne, wprowadź liczby.")
 
     '''
-        Drugi poziom trudności działa za pomocą funkcji minimaks w klasie GamePlay
-        komputer rekurencyjnie oblicza wszystkie pozycje i wstawia znak
+        Drugi poziom trudności działa za pomocą funkcji minimaks w klasie GamePlay.
+        Komputer rekurencyjnie oblicza wszystkie pozycje i wstawia znak
     '''
 
-    def second_level_game(self, board):
+    def second_level_game(self):
+        board = [[' ' for _ in range(3)] for _ in range(3)]
         for i in range(9):
             if self.gp.win_algorithm(board, 'X') or self.gp.win_algorithm(board, 'O'):
                 return
@@ -87,3 +89,4 @@ class Machine:
                     if self.gp.win_algorithm(board, 'O'):
                         print("\nKomputer wygrał!")
                         return
+        print("\nRemis")
